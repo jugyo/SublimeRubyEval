@@ -1,7 +1,7 @@
 RubyEval
 ========
 
-Evaluate selections in ♥♥♥Ruby♥♥♥, and print it to editor.
+Evaluate the selection in ♥♥♥Ruby♥♥♥, and print the result.
 
 ## Installation
 
