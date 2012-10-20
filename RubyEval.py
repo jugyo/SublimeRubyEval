@@ -5,7 +5,7 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         input_str = ""
         for region in self.view.sel():
-            input_str += self.view.substr(region)
+            input_str += self.view.substr(region) + "\n"
 
         if input_str != "":
             line_eval = False
@@ -13,7 +13,7 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
             line_eval = True
             for region in self.view.sel():
                 region_of_line = self.view.line(region)
-                input_str += self.view.substr(region_of_line)
+                input_str += self.view.substr(region_of_line) + "\n"
 
         try:
             ruby = self.view.settings().get("ruby_eval").get("ruby")
