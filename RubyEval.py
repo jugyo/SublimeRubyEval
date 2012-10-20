@@ -3,9 +3,17 @@ import sublime, sublime_plugin
 
 class RubyEvalCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        input_str = ''
+        input_str = ""
         for region in self.view.sel():
             input_str += self.view.substr(region)
+
+        if input_str != "":
+            line_eval = False
+        else:
+            line_eval = True
+            for region in self.view.sel():
+                region_of_line = self.view.line(region)
+                input_str += self.view.substr(region_of_line)
 
         try:
             ruby = self.view.settings().get("ruby_eval").get("ruby")
@@ -21,10 +29,19 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
             result = (lambda {
                 %s
             }).call
-            puts '#=> ' + result.inspect
+            print "#=> " + result.inspect
         """ % input_str)
+        output = output.strip()
 
         if proc.poll():
             output += "\n" + error
 
-        self.view.insert(edit, self.view.sel()[-1].b, output.strip())
+        if line_eval == False:
+            last_sel = self.view.sel()[-1]
+            insert_pos = max(last_sel.a, last_sel.b)
+        else:
+            last_line = self.view.line(self.view.sel()[-1])
+            insert_pos = last_line.b
+            output = "\n" + output
+
+        self.view.insert(edit, insert_pos, output)
