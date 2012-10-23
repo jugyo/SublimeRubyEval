@@ -28,7 +28,7 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
                                  stderr=subprocess.PIPE,
                                  stdin=subprocess.PIPE)
 
-        output, error = proc.communicate("""
+        ruby_input = u"""
             require 'stringio'
 
             io = StringIO.new
@@ -47,10 +47,12 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
             else
               print io.string
             end
-        """ % script)
+        """ % script
+
+        output, error = proc.communicate(ruby_input.encode('utf-8'))
         output = output.strip()
 
         if proc.poll():
             output += "\n" + error
 
-        return output
+        return unicode(output ,encoding='utf-8')
