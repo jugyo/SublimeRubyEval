@@ -14,7 +14,7 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
                 # eval selected
                 script = self.view.substr(region)
                 output = self.eval_as_ruby(script)
-                self.view.insert(edit, max(region.a, region.b), output)
+                self.view.insert(edit, max(region.a, region.b), " " + output)
 
     def ruby(self):
         try:
