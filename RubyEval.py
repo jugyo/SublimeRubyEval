@@ -43,7 +43,12 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
             end
 
             if io.string.empty?
-              print result.inspect
+              case result
+              when String
+                print result
+              else
+                print result.inspect
+              end
             else
               print io.string
             end
