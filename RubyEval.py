@@ -1,33 +1,7 @@
 import subprocess
 import sublime, sublime_plugin
 
-class RubyEvalCommand(sublime_plugin.TextCommand):
-    def run(self, edit):
-        for region in self.view.sel():
-            if region.a == region.b:
-                # eval line
-                region_of_line = self.view.line(region)
-                script = self.view.substr(region_of_line)
-                output = self.eval_as_ruby(script)
-                self.view.insert(edit, region_of_line.b, "\n" + output)
-                self.view.sel().subtract(region)
-                self.view.sel().add(
-                  sublime.Region(
-                    region_of_line.b + 1,
-                    region_of_line.b + 1 + len(output.replace("\n", ''))))
-            else:
-                # eval selected
-                script = self.view.substr(region)
-                output = self.eval_as_ruby(script)
-                tail = max(region.a, region.b)
-                space = "" if script[-1] == "\n" else " "
-                self.view.insert(edit, tail, space + output)
-                self.view.sel().subtract(region)
-                self.view.sel().add(
-                  sublime.Region(
-                    tail + len(space),
-                    tail + len(space) + len(output.replace("\n", ''))))
-
+class EvalAsRuby:
     def ruby(self):
         try:
             return self.view.settings().get("ruby_eval").get("ruby")
@@ -73,3 +47,30 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
             output += "\n" + error
 
         return unicode(output ,encoding='utf-8')
+
+class RubyEvalCommand(sublime_plugin.TextCommand, EvalAsRuby):
+    def run(self, edit):
+        for region in self.view.sel():
+            if region.a == region.b:
+                # eval line
+                region_of_line = self.view.line(region)
+                script = self.view.substr(region_of_line)
+                output = self.eval_as_ruby(script)
+                self.view.insert(edit, region_of_line.b, "\n" + output)
+                self.view.sel().subtract(region)
+                self.view.sel().add(
+                  sublime.Region(
+                    region_of_line.b + 1,
+                    region_of_line.b + 1 + len(output.replace("\n", ''))))
+            else:
+                # eval selected
+                script = self.view.substr(region)
+                output = self.eval_as_ruby(script)
+                tail = max(region.a, region.b)
+                space = "" if script[-1] == "\n" else " "
+                self.view.insert(edit, tail, space + output)
+                self.view.sel().subtract(region)
+                self.view.sel().add(
+                  sublime.Region(
+                    tail + len(space),
+                    tail + len(space) + len(output.replace("\n", ''))))
