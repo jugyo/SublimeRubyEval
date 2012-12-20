@@ -12,7 +12,7 @@ $ git clone https://github.com/jugyo/SublimeRubyEval.git RubyEval
 
 ## Usage
 
-The `ruby_eval` command is binded to `Ctrl + Shift + e`.
+The `ruby_eval` command is binded to `super+k, super+e`.
 
 ## Customize
 
