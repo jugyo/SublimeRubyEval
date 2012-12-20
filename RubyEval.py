@@ -11,15 +11,22 @@ class RubyEvalCommand(sublime_plugin.TextCommand):
                 output = self.eval_as_ruby(script)
                 self.view.insert(edit, region_of_line.b, "\n" + output)
                 self.view.sel().subtract(region)
-                self.view.sel().add(sublime.Region(region_of_line.b + 1, region_of_line.b + 1 + len(output)))
+                self.view.sel().add(
+                  sublime.Region(
+                    region_of_line.b + 1,
+                    region_of_line.b + 1 + len(output.replace("\n", ''))))
             else:
                 # eval selected
                 script = self.view.substr(region)
                 output = self.eval_as_ruby(script)
                 tail = max(region.a, region.b)
-                self.view.insert(edit, tail, " " + output)
+                space = "" if script[-1] == "\n" else " "
+                self.view.insert(edit, tail, space + output)
                 self.view.sel().subtract(region)
-                self.view.sel().add(sublime.Region(tail + 1, tail + 1 + len(output)))
+                self.view.sel().add(
+                  sublime.Region(
+                    tail + len(space),
+                    tail + len(space) + len(output.replace("\n", ''))))
 
     def ruby(self):
         try:
