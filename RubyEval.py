@@ -49,28 +49,33 @@ class EvalAsRuby:
         return unicode(output ,encoding='utf-8')
 
 class RubyEvalCommand(sublime_plugin.TextCommand, EvalAsRuby):
-    def run(self, edit):
+    def run(self, edit, output_to_editor=True):
         for region in self.view.sel():
             if region.a == region.b:
                 # eval line
                 region_of_line = self.view.line(region)
                 script = self.view.substr(region_of_line)
                 output = self.eval_as_ruby(script)
-                self.view.insert(edit, region_of_line.b, "\n" + output)
-                self.view.sel().subtract(region)
-                self.view.sel().add(
-                  sublime.Region(
-                    region_of_line.b + 1,
-                    region_of_line.b + 1 + len(output.replace("\n", ''))))
+                if output_to_editor:
+                    self.insert_output(output, region, edit, region_of_line.b, "\n")
+                else:
+                    pass # TODO
             else:
                 # eval selected
                 script = self.view.substr(region)
                 output = self.eval_as_ruby(script)
-                tail = max(region.a, region.b)
+                start = max(region.a, region.b)
                 space = "" if script[-1] == "\n" else " "
-                self.view.insert(edit, tail, space + output)
-                self.view.sel().subtract(region)
-                self.view.sel().add(
-                  sublime.Region(
-                    tail + len(space),
-                    tail + len(space) + len(output.replace("\n", ''))))
+                if output_to_editor:
+                    self.insert_output(output, region, edit, start, space)
+                else:
+                    pass # TODO
+
+    def insert_output(self, output, region, edit, start, space):
+        self.view.insert(edit, start, space + output)
+        self.view.sel().subtract(region)
+        len_of_space = len(space)
+        self.view.sel().add(
+          sublime.Region(
+            start + len_of_space,
+            start + len_of_space + len(output.replace("\n", ''))))
