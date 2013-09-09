@@ -46,7 +46,10 @@ class EvalAsRuby:
         if proc.poll():
             output += "\n" + error
 
-        return unicode(output ,encoding='utf-8')
+        try:
+          return str(output, 'utf-8')
+        except NameError:
+          return unicode(output ,encoding='utf-8')
 
 class RubyEvalCommand(sublime_plugin.TextCommand, EvalAsRuby):
     def run(self, edit, output_to_editor=True):
