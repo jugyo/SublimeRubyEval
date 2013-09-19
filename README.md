@@ -23,6 +23,7 @@ In your Preferences.sublime-settings:
   …
   "ruby_eval": {
     // "ruby": "/usr/local/bin/ruby"
+    // "ruby": "~/.rvm/bin/ruby"
     "ruby": "~/.rbenv/versions/2.0.0-dev/bin/ruby"
   }
   …
