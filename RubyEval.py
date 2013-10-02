@@ -54,7 +54,7 @@ class EvalAsRuby:
 class RubyEvalCommand(sublime_plugin.TextCommand, EvalAsRuby):
     def run(self, edit, output_to_editor=True):
         for region in self.view.sel():
-            if region.a == region.b:
+            if region.size() == 0:
                 # eval line
                 region_of_line = self.view.line(region)
                 script = self.view.substr(region_of_line)
