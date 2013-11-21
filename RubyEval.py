@@ -75,10 +75,6 @@ class RubyEvalCommand(sublime_plugin.TextCommand, EvalAsRuby):
                     pass # TODO
 
     def insert_output(self, output, region, edit, start, space):
-        self.view.insert(edit, start, space + output)
+        i = self.view.insert(edit, start, space + output)
         self.view.sel().subtract(region)
-        len_of_space = len(space)
-        self.view.sel().add(
-          sublime.Region(
-            start + len_of_space,
-            start + len_of_space + len(output.replace("\n", ''))))
+        self.view.sel().add(sublime.Region(start + len(space), start + i))
